@@ -1,0 +1,23 @@
+volumes:
+  rabbitmq_data:
+  rabbitmq_log:
+
+services:
+  api:
+    build: ./api/ 
+    image: arch_practice_6_api_image
+    container_name: arch_practice_6_api
+
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: arch_practice_6_rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+      - rabbitmq_log:/var/log/rabbitmq
+ 
