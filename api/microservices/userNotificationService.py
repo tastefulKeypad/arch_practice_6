@@ -1,15 +1,14 @@
-import pika
-import json
+import pika, json, threading
 from rabbitmq import RabbitMQClient
 
 class UserNotificationService:
     def __init__(self):
-        self.self.rabbitClient = RabbitMQClient()
+        self.rabbitClient = RabbitMQClient()
         self.EventAddUserListen()
         self.EventAddRentListen()
         self.EventFinalizeRent()
 
-    def EventAddRentListen(self):
+    def EventAddUserListen(self):
         def callback(ch, method, properties, body):
             print(f" [x] userNotificationService | EventAddUser | RECEIVED: {body}")
         self.rabbitClient.channel.exchange_declare(exchange='userEvents', exchange_type='fanout')
@@ -17,7 +16,9 @@ class UserNotificationService:
         queueName = result.method.queue
         self.rabbitClient.channel.queue_bind(exchange='userEvents', queue=queueName)
         self.rabbitClient.channel.basic_consume(queue=queueName, on_message_callback=callback, auto_ack=True)
-        self.rabbitClient.channel.start_consuming()
+        thread = threading.Thread(target=self.rabbitClient.channel.start_consuming, daemon=True)
+        thread.start()
+        return thread
 
     def EventAddRentListen(self):
         def callback(ch, method, properties, body):
@@ -27,11 +28,15 @@ class UserNotificationService:
         queueName = result.method.queue
         self.rabbitClient.channel.queue_bind(exchange='rentEvents', queue=queueName)
         self.rabbitClient.channel.basic_consume(queue=queueName, on_message_callback=callback, auto_ack=True)
-        self.rabbitClient.channel.start_consuming()
+        thread = threading.Thread(target=self.rabbitClient.channel.start_consuming, daemon=True)
+        thread.start()
+        return thread
     
     def EventFinalizeRentListen(self):
         def callback(ch, method, properties, body):
             print(f" [x] userNotificationService | EventFinalizeRent | RECEIVED: {body}")
         self.rabbitClient.channel.queue_declare(queue='notifyUser', durable=True, arguments={'x-queue-type': 'quorum'})
         self.rabbitClient.channel.basic_consume(queue='notifyUser', on_message_callback=callback, auto_ack=True)
-        self.rabbitClient.channel.start_consuming()
+        thread = threading.Thread(target=self.rabbitClient.channel.start_consuming, daemon=True)
+        thread.start()
+        return thread

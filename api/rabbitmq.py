@@ -1,4 +1,4 @@
-import pika
+import pika, os
 
 class RabbitMQClient:
     def __init__(self):
@@ -10,7 +10,8 @@ class RabbitMQClient:
         self.close()
 
     def connect(self):
-        self.connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
+        hostname = os.getenv('RABBITMQ_HOST', 'arch_practice_6_rabbitmq')
+        self.connection = pika.BlockingConnection(pika.ConnectionParameters(host=hostname))
         self.channel = self.connection.channel()
 
     def close(self):

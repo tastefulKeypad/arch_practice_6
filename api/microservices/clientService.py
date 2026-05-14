@@ -1,5 +1,4 @@
-import pika
-import json
+import pika, json
 from rabbitmq import RabbitMQClient
 
 rabbitClient = RabbitMQClient()

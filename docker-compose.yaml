@@ -7,6 +7,9 @@ services:
     build: ./api/ 
     image: arch_practice_6_api_image
     container_name: arch_practice_6_api
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
     command: python3 main.py
 
   rabbitmq:
@@ -21,4 +24,10 @@ services:
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
       - rabbitmq_log:/var/log/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 15s
+      timeout: 2s
+      start_period: 1s
+      retries: 3
  
