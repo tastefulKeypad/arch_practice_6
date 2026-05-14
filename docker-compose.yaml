@@ -7,6 +7,7 @@ services:
     build: ./api/ 
     image: arch_practice_6_api_image
     container_name: arch_practice_6_api
+    command: python3 main.py
 
   rabbitmq:
     image: rabbitmq:management

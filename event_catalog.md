@@ -1,6 +1,6 @@
 # Каталог событий пользователей
 EventAddUser
-- Payload: userName, userSurname, userEmail, userIsAdmin, userPassword
+- Payload: userName, userSurname, userEmail
 - Event producer: clientService
 - Event consumer: userNotificationService (отправляет сообщение об успешной регистрации на почту), analyticsService(обновляет метрики и статистику зарегистрированных пользователей, например, по стране)
 - Delivery guarantee: At-Least-Once
