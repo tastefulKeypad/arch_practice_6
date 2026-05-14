@@ -1,6 +1,6 @@
 import pika
 import json
-import rabbitmq
+from rabbitmq import RabbitMQClient
 
 class UserNotificationService:
     def __init__(self):
