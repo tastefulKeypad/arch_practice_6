@@ -15,7 +15,7 @@ class AnalyticsService:
 
     def EventAddUserListen(self):
         def callback(ch, method, properties, body):
-            print(f" [x] analyticsService | EventAddRent | RECEIVED: {body}")
+            print(f" [x] analyticsService | EventAddUser | RECEIVED: {body}")
         self.rabbitClient.channel.exchange_declare(exchange='userEvents', exchange_type='fanout')
         result = self.rabbitClient.channel.queue_declare(queue='', exclusive=True)
         queueName = result.method.queue
