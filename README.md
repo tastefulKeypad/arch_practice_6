@@ -16,3 +16,8 @@ docker-compose up -d --build
 docker-compose down -v 
 docker rmi arch_practice_6_api_image
 ```
+
+# Примеры использования
+После запуска на `localhost:15672` будет доступен UI RabbitMQ, логин: guest, пароль: guest
+
+Каждые 5 секунд обновляются логи передачи событий. Чтобы их посмотреть через docker-CLI: `docker logs arch_practice_6_api`.

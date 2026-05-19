@@ -1,11 +1,17 @@
 import pika, json, threading
 from rabbitmq import RabbitMQClient
 
+def run():
+    print(" [x] analyticsService | INITIALIZATION")
+    analyticsServiceInstance = AnalyticsService()
+
 class AnalyticsService:
     def __init__(self):
         self.rabbitClient = RabbitMQClient()
         self.EventAddUserListen()
-        self.EventFinalizeRent()
+        self.EventAddRentListen()
+        print(" [x] analyticsService | READY")
+        self.rabbitClient.channel.start_consuming()
 
     def EventAddUserListen(self):
         def callback(ch, method, properties, body):
@@ -15,9 +21,6 @@ class AnalyticsService:
         queueName = result.method.queue
         self.rabbitClient.channel.queue_bind(exchange='userEvents', queue=queueName)
         self.rabbitClient.channel.basic_consume(queue=queueName, on_message_callback=callback, auto_ack=True)
-        thread = threading.Thread(target=self.rabbitClient.channel.start_consuming, daemon=True)
-        thread.start()
-        return thread
 
     def EventAddRentListen(self):
         def callback(ch, method, properties, body):
@@ -27,6 +30,3 @@ class AnalyticsService:
         queueName = result.method.queue
         self.rabbitClient.channel.queue_bind(exchange='rentEvents', queue=queueName)
         self.rabbitClient.channel.basic_consume(queue=queueName, on_message_callback=callback, auto_ack=True)
-        thread = threading.Thread(target=self.rabbitClient.channel.start_consuming, daemon=True)
-        thread.start()
-        return thread
